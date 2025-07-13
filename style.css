@@ -6,9 +6,11 @@
 }
 
 /* —— body + fonts —— */
+
 body {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
-  color: #333;
+  color: #111;
+  background: #181818;
   display: flex;
   justify-content: center;
 }
@@ -16,18 +18,36 @@ body {
 .page-wrapper {
   width: 90%;
   max-width: 900px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.08);
+  border: 2px solid #e5c77a;
+  margin-top: 48px;
+  margin-bottom: 48px;
 }
 
 /* header */
+
 .site-header {
   text-align: center;
-  padding-top: 50px;
+  padding-top: 40px;
+  padding-bottom: 10px;
+  background: #000;
+  border-radius: 18px 18px 0 0;
+}
+
+.loreal-logo {
+  width: 180px;
+  margin-bottom: 10px;
+  filter: brightness(0) invert(1);
 }
 
 .site-title {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 700;
   margin-bottom: 10px;
+  color: #e5c77a;
+  letter-spacing: 0.04em;
 }
 
 /* chat window */
@@ -37,13 +57,14 @@ body {
 
 .chat-window {
   height: 360px;
-  border: 1px solid #000;
+  border: 2px solid #e5c77a;
   padding: 20px;
   font-size: 18px;
   line-height: 1.5;
   overflow-y: auto;
-  background: #fafafa;
+  background: #fff;
   white-space: pre-line;
+  border-radius: 12px;
 }
 
 /* messages */
@@ -53,14 +74,25 @@ body {
 }
 
 .msg.user {
-  color: #000;
+  color: #111;
+  background: #f7f3e8;
+  padding: 8px 14px;
+  border-radius: 16px 16px 2px 16px;
+  display: inline-block;
+  border: 1px solid #e5c77a;
 }
 
 .msg.ai {
-  color: #666666;
+  color: #fff;
+  background: #111;
+  padding: 8px 14px;
+  border-radius: 16px 16px 16px 2px;
+  display: inline-block;
+  border: 1px solid #e5c77a;
 }
 
 /* input row */
+
 .chat-form {
   display: flex;
   gap: 12px;
@@ -70,19 +102,22 @@ body {
 .chat-form input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ccc;
+  border: 1.5px solid #e5c77a;
   font-size: 18px;
+  background: #f7f3e8;
+  color: #111;
+  border-radius: 8px;
 }
 
 .chat-form input:focus {
-  outline: 2px solid #000;
+  outline: 2px solid #e5c77a;
   outline-offset: 2px;
 }
 
 .chat-form button {
   font-size: 18px;
-  background: #000;
-  color: #fff;
+  background: #e5c77a;
+  color: #111;
   border: none;
   padding: 12px;
   width: 48px;
@@ -91,19 +126,22 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  border-radius: 8px;
   transition: background 0.3s;
 }
 
 .chat-form button .material-icons {
   font-size: 24px;
+  color: #111;
 }
 
 .chat-form button:hover {
-  background: #666666;
+  background: #000;
+  color: #e5c77a;
 }
 
 .chat-form button:focus {
-  outline: 2px solid #000;
+  outline: 2px solid #e5c77a;
   outline-offset: 2px;
 }
 
@@ -121,11 +159,12 @@ body {
 }
 
 /* footer */
+
 .site-footer {
   margin: 60px 0 40px;
   text-align: center;
   font-size: 14px;
-  color: #666;
+  color: #111;
 }
 
 .site-footer nav {
@@ -134,10 +173,11 @@ body {
 
 .site-footer a {
   margin: 0 8px;
-  color: #000;
+  color: #e5c77a;
   text-decoration: none;
+  font-weight: 500;
 }
 
 .site-footer a:hover {
-  color: #666666;
+  color: #000;
 }
