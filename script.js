@@ -1,5 +1,3 @@
-// const workerUrl = "https://project8-worker.nhailes.workers.dev/";
-
 // Get DOM elements
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
@@ -164,32 +162,3 @@ chatForm.addEventListener("submit", async (e) => {
     addMessage("Sorry, there was a problem connecting to the assistant.", "ai");
   }
 });
-// try {
-//   // Send the full conversation (including system prompt) to the API
-//   const response = await fetch(workerUrl, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({ messages, webSearchEnabled }),
-//   });
-//   const data = await response.json();
-//   let botReply = "(No reply)";
-//   if (
-//     data.choices &&
-//     data.choices[0] &&
-//     data.choices[0].message &&
-//     data.choices[0].message.content
-//   ) {
-//     botReply = data.choices[0].message.content;
-//   }
-//   // Add assistant reply to history
-//   messages.push({ role: "assistant", content: botReply });
-//   renderMessages();
-// } catch (error) {
-//   messages.push({
-//     role: "assistant",
-//     content: "Sorry, there was an error connecting to the API.",
-//   });
-//   renderMessages();
-// }
