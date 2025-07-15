@@ -1,3 +1,5 @@
+// const workerUrl = "https://project8-worker.nhailes.workers.dev/";
+
 // Get DOM elements
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
@@ -93,72 +95,101 @@ chatForm.addEventListener("submit", async (e) => {
   chatWindow.appendChild(loadingMsg);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 
-  // Add user message to messages array
+  // Build context instruction for the assistant
+  let contextInstruction = "";
+  if (userContext.name) {
+    contextInstruction += `The user's name is ${userContext.name}. `;
+  }
+  if (userContext.questions.length > 1) {
+    contextInstruction += `Here are the user's previous questions: ${userContext.questions
+      .slice(0, -1)
+      .join(" | ")}. `;
+  }
+
+  // Prepare messages array with context system message if needed
+  let payloadMessages;
+  if (contextInstruction) {
+    const contextMsg = { role: "system", content: contextInstruction };
+    payloadMessages = messages.concat([
+      contextMsg,
+      { role: "user", content: userText },
+    ]);
+  } else {
+    payloadMessages = messages.concat({ role: "user", content: userText });
+  }
+
+  // Add user message to messages array (for local state)
   messages.push({ role: "user", content: userText });
 
   try {
-    // Send request to OpenAI API
-    // Add context instructions for the assistant
-    let contextInstruction = "";
-    if (userContext.name) {
-      contextInstruction += `The user's name is ${userContext.name}. `;
-    }
-    if (userContext.questions.length > 1) {
-      contextInstruction += `Here are the user's previous questions: ${userContext.questions
-        .slice(0, -1)
-        .join(" | ")}. `;
-    }
-    if (contextInstruction) {
-      // Insert as a system message just before the user's message
-      const contextMsg = { role: "system", content: contextInstruction };
-      // Copy messages, insert context before last user message
-      const messagesWithContext = messages
-        .slice(0, -1)
-        .concat([contextMsg, messages[messages.length - 1]]);
-      var payloadMessages = messagesWithContext;
-    } else {
-      var payloadMessages = messages;
-    }
-
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: payloadMessages,
-        max_tokens: 300,
-      }),
-    });
-
-    const data = await response.json();
-
-    // Get the assistant's reply
-    const aiReply =
+    let data;
+    let aiReply = "(No reply)";
+    // Always use the Cloudflare Worker endpoint for chat requests
+    const response = await fetch(
+      "https://project8-worker.nhailes.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: payloadMessages }),
+      }
+    );
+    data = await response.json();
+    if (
+      data &&
       data.choices &&
       data.choices[0] &&
       data.choices[0].message &&
       data.choices[0].message.content
-        ? data.choices[0].message.content.trim()
-        : "Sorry, I couldn't get a response. Please try again.";
-
+    ) {
+      aiReply = data.choices[0].message.content;
+    }
     // Remove loading message
     chatWindow.removeChild(loadingMsg);
-
     // Add AI reply to chat window, just below the latest user question
     const aiMsgDiv = document.createElement("div");
     aiMsgDiv.className = "msg ai";
     aiMsgDiv.textContent = aiReply;
     chatWindow.appendChild(aiMsgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
-
     // Add AI reply to messages array
     messages.push({ role: "assistant", content: aiReply });
+
+    // Track user's question for context
+    userContext.questions.push(userText);
   } catch (error) {
     // Remove loading message
     chatWindow.removeChild(loadingMsg);
     addMessage("Sorry, there was a problem connecting to the assistant.", "ai");
   }
 });
+// try {
+//   // Send the full conversation (including system prompt) to the API
+//   const response = await fetch(workerUrl, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({ messages, webSearchEnabled }),
+//   });
+//   const data = await response.json();
+//   let botReply = "(No reply)";
+//   if (
+//     data.choices &&
+//     data.choices[0] &&
+//     data.choices[0].message &&
+//     data.choices[0].message.content
+//   ) {
+//     botReply = data.choices[0].message.content;
+//   }
+//   // Add assistant reply to history
+//   messages.push({ role: "assistant", content: botReply });
+//   renderMessages();
+// } catch (error) {
+//   messages.push({
+//     role: "assistant",
+//     content: "Sorry, there was an error connecting to the API.",
+//   });
+//   renderMessages();
+// }
